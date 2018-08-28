@@ -9,8 +9,19 @@ namespace OOPS3Opgave.Entities
 {
     public class CheckingAccount : Account
     {
-        public CheckingAccount(string accountNumber, decimal balance, ReadOnlyCollection<Transaction> transactions, int NoMonthlyFreeTransactions = 20) : base(accountNumber, balance, transactions)
+        private int noMontlyFreeTransactions;
+
+        
+
+        public CheckingAccount(string accountNumber, decimal balance, ReadOnlyCollection<Transaction> transactions, int noMonthlyFreeTransactions = 20) : base(accountNumber, balance, transactions)
         {
+            this.NoMonthlyFreeTransactions = noMonthlyFreeTransactions;
+        }
+
+        public int NoMonthlyFreeTransactions
+        {
+            get { return noMontlyFreeTransactions; }
+            set { noMontlyFreeTransactions = value; }
         }
     }
 }

@@ -35,23 +35,43 @@ namespace OOPS3Opgave.Entities
         public virtual decimal CalculateCostOfMonth(Month month)
         {
             decimal costOfMonth = 0;
-            int transactionCount = 0;
+            List<SavingAccount> savingAccounts = new List<SavingAccount>();
+            List<CheckingAccount> checkingAccounts = new List<CheckingAccount>();
             foreach (Account account in Accounts)
+            {
+                
+                if (account.GetType() == typeof(SavingAccount))
+                {
+                    savingAccounts.Add(account as SavingAccount);
+                }
+                else if (account.GetType() == typeof(CheckingAccount))
+                {
+                    checkingAccounts.Add(account as CheckingAccount);
+                }
+
+                //transactionCount = 0;
+                //costOfMonth += MonthlyAccountFee;
+            }
+            foreach (SavingAccount account in savingAccounts)
             {
                 foreach (Transaction transaction in account.Transactions)
                 {
                     if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
                     {
-                        if (account.AccountType == AccountType.Checking)
+                        costOfMonth += TransactionCost;
+                    }
+                }
+                costOfMonth += MonthlyAccountFee;
+            }
+            foreach (CheckingAccount account in checkingAccounts)
+            {
+                foreach (Transaction transaction in account.Transactions)
+                {
+                    if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
+                    {
+                        if (account.NoMonthlyFreeTransactions > 0)
                         {
-                            if (transactionCount > 20)
-                            {
-                                costOfMonth += TransactionCost;
-                            }
-                            else
-                            {
-                                transactionCount++;
-                            }
+                            account.NoMonthlyFreeTransactions--;
                         }
                         else
                         {
@@ -59,8 +79,7 @@ namespace OOPS3Opgave.Entities
                         }
                     }
                 }
-                transactionCount = 0;
-                costOfMonth += MonthlyAccountFee;
+                costOfMonth += TransactionCost;
             }
             return costOfMonth;       
         }

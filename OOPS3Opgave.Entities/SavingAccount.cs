@@ -18,8 +18,10 @@ namespace OOPS3Opgave.Entities
 
         public decimal AddInterest()
         {
-            return this.Balance / 100 * this.Interest;
-            
+            decimal interestAmount; 
+            interestAmount = this.Balance / 100 * this.Interest;
+            this.Balance += interestAmount;
+            return Balance;
         }
         public decimal Interest
         {

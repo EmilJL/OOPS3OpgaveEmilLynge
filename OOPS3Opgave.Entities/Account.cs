@@ -18,22 +18,34 @@ namespace OOPS3Opgave.Entities
             get { return accountNumber; }
         }
 
-
-        //private AccountType accountType;
-
-        //public AccountType AccountType
-        //{
-        //    get { return accountType; }
-        //    set { accountType = value; }
-        //
-
         protected Account(string accountNumber, decimal balance, ReadOnlyCollection<Transaction> transactions)
         {
             this.transactions = transactions;
             this.balance = balance;
             this.accountNumber = accountNumber;
         }
+        public bool Processor(Transaction t)
+        {
+            try
+            {
+                t.Reciever.Balance += t.Amount;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            try
+            {
+                t.Transmitter.balance += t.Amount;
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+
+            return true;
+        }
         public ReadOnlyCollection<Transaction> Transactions
         {
             get { return transactions; }
@@ -41,12 +53,7 @@ namespace OOPS3Opgave.Entities
         public decimal Balance
         {
             get { return balance; }
+            protected set { balance = value; }
         }
-
-        //public decimal MyProperty
-        //{
-        //    get { return Balance; }
-        //} 
-
     }
 }
