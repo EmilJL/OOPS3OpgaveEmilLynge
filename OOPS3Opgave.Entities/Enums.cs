@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace OOPS3Opgave.Entities
 {
-    public class Enums
-    {
-    }
+    //public enum AccountType
+    //{
+    //    Checking,
+    //    Saving
+    //}
     public enum Month
     {
         January,

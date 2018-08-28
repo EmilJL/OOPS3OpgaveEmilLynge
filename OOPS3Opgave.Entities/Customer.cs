@@ -1,28 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OOPS3Opgave.Entities
-{
+{/* skal den virkelig være abstract? */
     public abstract class Customer
     {
         private decimal transactionCost;
         private decimal monthlyAccountFee;
         private string cpr;
         private string name;
+        private ReadOnlyCollection<Account> accounts;
+
         
-        public Customer(string name, string cpr, Account account)
+
+
+        protected Customer(string name, string cpr, ReadOnlyCollection<Account> accounts)
         {
             Name = name;
-            CPR = cpr;
-            MonthlyAccountFee = CalculateCostOfMonth(, )
+            this.cpr = cpr;
+            this.accounts = accounts;
+            this.monthlyAccountFee = MonthlyAccountFee;
+            this.transactionCost = TransactionCost;
         }
 
-        public decimal CalculateCostOfMonth(Month month, decimal monthlyAccountFee, decimal transactionCost)
+        public ReadOnlyCollection<Account> Accounts
         {
-            return 0;
+            get { return accounts; }
+        }
+
+        public virtual decimal CalculateCostOfMonth(Month month)
+        {
+            decimal costOfMonth = 0;
+            int transactionCount = 0;
+            foreach (Account account in Accounts)
+            {
+                foreach (Transaction transaction in account.Transactions)
+                {
+                    if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
+                    {
+                        if (account.AccountType == AccountType.Checking)
+                        {
+                            if (transactionCount > 20)
+                            {
+                                costOfMonth += TransactionCost;
+                            }
+                            else
+                            {
+                                transactionCount++;
+                            }
+                        }
+                        else
+                        {
+                            costOfMonth += TransactionCost;
+                        }
+                    }
+                }
+                transactionCount = 0;
+                costOfMonth += MonthlyAccountFee;
+            }
+            return costOfMonth;       
         }
 
         public string Name
@@ -35,22 +75,24 @@ namespace OOPS3Opgave.Entities
         public string CPR
         {
             get { return cpr; }
-            set { cpr = value; }
+            //set { cpr = value; }
         }
 
 
-        public decimal MonthlyAccountFee
+        public virtual decimal MonthlyAccountFee
         {
-            get { return monthlyAccountFee; }
-            set { monthlyAccountFee = value; }
+            get
+            {
+                return 15M;
+            }
+            //set { monthlyAccountFee = value; }
         }
 
 
-        public decimal TransactionCost
+        public virtual decimal TransactionCost
         {
-            get { return transactionCost; }
-            set { transactionCost = value; }
+            get { return 1.95M; }
+            //set { transactionCost = value; }
         }
-
     }
 }
