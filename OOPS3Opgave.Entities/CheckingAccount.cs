@@ -11,8 +11,6 @@ namespace OOPS3Opgave.Entities
     {
         private int noMontlyFreeTransactions;
 
-        
-
         public CheckingAccount(string accountNumber, decimal balance, ReadOnlyCollection<Transaction> transactions, int noMonthlyFreeTransactions = 20) : base(accountNumber, balance, transactions)
         {
             this.NoMonthlyFreeTransactions = noMonthlyFreeTransactions;

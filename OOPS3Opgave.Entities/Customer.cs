@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OOPS3Opgave.Entities
-{/* skal den virkelig være abstract? */
+{
     public abstract class Customer
     {
         private decimal transactionCost;
@@ -14,9 +14,6 @@ namespace OOPS3Opgave.Entities
         private string cpr;
         private string name;
         private ReadOnlyCollection<Account> accounts;
-
-        
-
 
         protected Customer(string name, string cpr, ReadOnlyCollection<Account> accounts)
         {
@@ -35,52 +32,77 @@ namespace OOPS3Opgave.Entities
         public virtual decimal CalculateCostOfMonth(Month month)
         {
             decimal costOfMonth = 0;
-            List<SavingAccount> savingAccounts = new List<SavingAccount>();
-            List<CheckingAccount> checkingAccounts = new List<CheckingAccount>();
+            //List<SavingAccount> savingAccounts = new List<SavingAccount>();
+            //List<CheckingAccount> checkingAccounts = new List<CheckingAccount>();
+            SavingAccount sA;
+            CheckingAccount cA;
             foreach (Account account in Accounts)
-            {
-                
+            {   
                 if (account.GetType() == typeof(SavingAccount))
                 {
-                    savingAccounts.Add(account as SavingAccount);
-                }
-                else if (account.GetType() == typeof(CheckingAccount))
-                {
-                    checkingAccounts.Add(account as CheckingAccount);
-                }
-
-                //transactionCount = 0;
-                //costOfMonth += MonthlyAccountFee;
-            }
-            foreach (SavingAccount account in savingAccounts)
-            {
-                foreach (Transaction transaction in account.Transactions)
-                {
-                    if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
+                    sA = account as SavingAccount;
+                    foreach (Transaction transaction in sA.Transactions)
                     {
-                        costOfMonth += TransactionCost;
-                    }
-                }
-                costOfMonth += MonthlyAccountFee;
-            }
-            foreach (CheckingAccount account in checkingAccounts)
-            {
-                foreach (Transaction transaction in account.Transactions)
-                {
-                    if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
-                    {
-                        if (account.NoMonthlyFreeTransactions > 0)
-                        {
-                            account.NoMonthlyFreeTransactions--;
-                        }
-                        else
+                        if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
                         {
                             costOfMonth += TransactionCost;
                         }
                     }
+                    costOfMonth += this.MonthlyAccountFee;
+                    //savingAccounts.Add(account as SavingAccount);
                 }
-                costOfMonth += TransactionCost;
+                else if (account.GetType() == typeof(CheckingAccount))
+                {
+                    cA = account as CheckingAccount;
+                    foreach (Transaction transaction in cA.Transactions)
+                    {
+                        if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
+                        {
+                            if (cA.NoMonthlyFreeTransactions > 0)
+                            {
+                                cA.NoMonthlyFreeTransactions--;
+                            }
+                            else
+                            {
+                                costOfMonth += TransactionCost;
+                            }
+                        }
+                    }
+                    cA.NoMonthlyFreeTransactions = 20;
+                    costOfMonth += this.MonthlyAccountFee;
+                    //checkingAccounts.Add(account as CheckingAccount);
+                }
             }
+            //foreach (SavingAccount account in savingAccounts)
+            //{
+            //    foreach (Transaction transaction in account.Transactions)
+            //    {
+            //        if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
+            //        {
+            //            costOfMonth += TransactionCost;
+            //        }
+            //    }
+            //    costOfMonth += MonthlyAccountFee;
+            //}
+            //foreach (CheckingAccount account in checkingAccounts)
+            //{
+            //    foreach (Transaction transaction in account.Transactions)
+            //    {
+            //        if ((Month)Enum.Parse(typeof(Month), transaction.DateTimeOfTransaction.ToString("MMMM")) == month)
+            //        {
+            //            if (account.NoMonthlyFreeTransactions > 0)
+            //            {
+            //                account.NoMonthlyFreeTransactions--;
+            //            }
+            //            else
+            //            {
+            //                costOfMonth += TransactionCost;
+            //            }
+            //        }
+            //    }
+            //    account.NoMonthlyFreeTransactions = 20;
+            //    costOfMonth += MonthlyAccountFee;
+            //}
             return costOfMonth;       
         }
 
@@ -89,29 +111,20 @@ namespace OOPS3Opgave.Entities
             get { return name; }
             set { name = value; }
         }
-
-
         public string CPR
         {
             get { return cpr; }
-            //set { cpr = value; }
         }
-
-
         public virtual decimal MonthlyAccountFee
         {
             get
             {
                 return 15M;
             }
-            //set { monthlyAccountFee = value; }
         }
-
-
         public virtual decimal TransactionCost
         {
             get { return 1.95M; }
-            //set { transactionCost = value; }
         }
     }
 }
